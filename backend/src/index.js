@@ -34,13 +34,6 @@ app.use((req, res, next) => {
 
 // ✅ Protect this route with Clerk middleware
 app.use("/api/report", ClerkExpressRequireAuth(), reportRoutes);
-if(process.env.NODE_ENV==="production"){
-    app.use(express.static(path.join(__dirname,"../frontend/dist")))
-
-    app.get("*",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
-    })
-}
 
 // Error handling middleware (should be after routes)
 app.use((err, req, res, next) => {
@@ -50,6 +43,17 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
+
+if (process.env.NODE_ENV === "production") {
+  const staticPath = path.join(__dirname, "..", "frontend", "dist");
+  app.use(express.static(staticPath));
+  
+  // Catch-all route for SPA (must be last before 404)
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(staticPath, "index.html"));
+  });
+}
+
 
 // 404 handler (should be last)
 app.use((req, res) => {
