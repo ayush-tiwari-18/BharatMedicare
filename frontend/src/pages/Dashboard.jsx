@@ -46,7 +46,7 @@ function DashboardNavbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-black/80 backdrop-blur border-b border-gray-800">
-      <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between relative"> {/* Added relative here */}
+      <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between relative">
         <div className="text-white font-bold text-lg sm:text-xl">BharatMedicare</div>
         
         {/* Mobile menu button */}
@@ -68,7 +68,37 @@ function DashboardNavbar() {
 
         {/* Desktop Navigation */}
         <NavigationMenu className="hidden md:block">
-          {/* ... desktop nav items ... */}
+          <NavigationMenuList className="flex items-center space-x-2">
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/dashboard"
+                className="text-white hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Dashboard
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/upload"
+                className="text-white hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Upload
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="/reports"
+                className="text-white hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Reports
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <div className="ml-4">
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            </NavigationMenuItem>
+          </NavigationMenuList>
         </NavigationMenu>
 
         {/* Mobile Navigation - Fixed to full width below navbar */}
@@ -132,6 +162,7 @@ const Dashboard = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [isSubmitting, setisSubmitting] = useState(false);
 
   useEffect(() => {
     if (isLoaded && isSignedIn) {
@@ -284,6 +315,7 @@ const Dashboard = () => {
       formData.append("gender", gender);
       formData.append("area", affectedArea);
 
+      setisSubmitting(true);
       toast.loading("Analyzing skin lesion...", { id: "skin-submit" });
 
       const res = await fetch(API_ENDPOINTS.submitReport, {
@@ -302,6 +334,7 @@ const Dashboard = () => {
 
       const newReport = await res.json();
       toast.success("Analysis completed!", { id: "skin-submit" });
+      setisSubmitting(false)
       
       setSkinDialogOpen(false);
       await fetchReports();
@@ -577,7 +610,7 @@ const Dashboard = () => {
                       Cancel
                     </Button>
                   </DialogClose>
-                  <Button type="submit">Analyze</Button>
+                  <Button type="submit" disabled={isSubmitting}>Analyze</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
