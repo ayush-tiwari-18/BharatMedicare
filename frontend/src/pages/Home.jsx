@@ -172,7 +172,7 @@ const Home = () => {
             </div>
             
             <div className="text-gray-400 text-center md:text-right">
-              <p>&copy; 2024 BharatMedicare. All rights reserved.</p>
+              <p>&copy; 2025 BharatMedicare. All rights reserved.</p>
               <p className="mt-2">Advancing healthcare through AI innovation.</p>
             </div>
           </div>
